@@ -25,12 +25,12 @@ export const authMiddleware: RequestHandler = async (req, res, next) => {
     const user = await verifyRequest(req);
 
     if (!user) {
-      return next(new AppError("Unauthorized", 401));
+      throw new AppError("Unauthorized", 401);
     }
 
     req.user = user;
     next();
   } catch (error) {
-    next(error);
+    throw new AppError("Unauthorized", 401);
   }
 };

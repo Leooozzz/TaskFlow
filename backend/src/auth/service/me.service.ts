@@ -6,7 +6,5 @@ export const meService = async (id:number) => {
   if(!user){
     throw new AppError("Unauthorized",401)
   }
-  return {
-    ...formatUser(user)
-  }
+ return user
 }

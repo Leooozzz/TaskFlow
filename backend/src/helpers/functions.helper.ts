@@ -5,12 +5,12 @@ import bcrypt from "bcrypt";
 
 export const getUserByIdAuth = async (id: number) => {
   const user = await User.findByPk(id);
+
   if (!user) {
     throw new Error("User not found");
   }
   return user;
 };
-
 export const createToken = (user: User) => {
   return createJsonWebToken({ id: user.id });
 };
@@ -23,12 +23,16 @@ export const verifyPassword = async (
 };
 
 export const formatUser = (user: User) => {
-  const { password, ...userWithoutPassword } = user;
-  if (userWithoutPassword.avatar) {
-    userWithoutPassword.avatar = `${process.env.BASE_URL}/static/avatars/${userWithoutPassword}`;
-  }
-  const { id, name, email, avatar } = userWithoutPassword;
-  return { id, name, email, avatar };
+  const { password, ...userWithoutPassword } = user.toJSON();
+
+  return {
+    id: userWithoutPassword.id,
+    name: userWithoutPassword.name,
+    email: userWithoutPassword.email,
+    avatar: userWithoutPassword.avatar
+      ? `${process.env.BASE_URL}/static/avatars/${userWithoutPassword.avatar}`
+      : null,
+  };
 };
 
 export const getUserByEmail = async (email: string) => {

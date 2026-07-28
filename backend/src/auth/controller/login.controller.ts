@@ -29,7 +29,6 @@ export const loginController: RequestHandler = async (req, res) => {
       data: userFormated,
       token,
     });
-
   } catch (error: any) {
     console.error(error);
 
