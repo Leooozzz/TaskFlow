@@ -4,13 +4,13 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${DB_NAME:-taskflow}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
     ports:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${DB_PASSWORD:-root}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -20,7 +20,10 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     restart: unless-stopped
+    env_file:
+      - ./backend/.env
     environment:
+      NODE_ENV: development
       DB_HOST: db
       DB_PORT: 3306
       DB_NAME: ${DB_NAME:-taskflow}
@@ -31,7 +34,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-
   frontend:
     build:
       context: ./frontend
