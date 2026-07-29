@@ -2,11 +2,18 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci --omit=dev
+RUN apk add --no-cache \
+    netcat-openbsd \
+    mysql-client
 
-COPY src ./src
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN chmod +x entrypoint.sh
 
 EXPOSE 3000
 
-CMD ["node", "src/server.js"]
+ENTRYPOINT ["sh", "./entrypoint.sh"]
