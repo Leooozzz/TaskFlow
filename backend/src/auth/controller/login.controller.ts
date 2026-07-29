@@ -3,7 +3,9 @@ import { loginSchema } from "../schema/login.schema";
 import { AppError } from "../../middlewares/app.error";
 import { loginService } from "../service/login.service";
 import { createToken, formatUser } from "../../helpers/functions.helper";
-export const loginController: RequestHandler = async (req, res) => {
+import { generateToken } from "../../middlewares/csrf.middleware";
+
+export const loginController: RequestHandler = async (req, res, next) => {
   try {
     const data = loginSchema.parse(req.body);
 
@@ -14,27 +16,25 @@ export const loginController: RequestHandler = async (req, res) => {
     }
 
     const token = createToken(result);
+
     const userFormated = formatUser(result);
+
+    const csrfToken = generateToken(req, res);
 
     res.cookie("session", token, {
       httpOnly: true,
-      secure: false,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 1000 * 60 * 60 * 24,
     });
 
     return res.status(200).json({
       error: null,
       data: userFormated,
-      token,
+      csrfToken,
     });
-  } catch (error: any) {
-    console.error(error);
-
-    return res.status(500).json({
-      error: error,
-      message: error.message,
-    });
+  } catch (error) {
+    next(error);
   }
 };
