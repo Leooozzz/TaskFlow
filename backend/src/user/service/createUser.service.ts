@@ -1,4 +1,4 @@
-import { hashPassword } from "../../helpers/functions.helper";
+import { formatUser, hashPassword } from "../../helpers/functions.helper";
 import User from "../../models/user.model";
 import { createUserInput } from "../schema/createUser.schema";
 
@@ -10,4 +10,6 @@ export const createUserService = async (data: createUserInput) => {
     avatar: data.avatar,
     password: hashedPassword,
   });
+  const formatedUser = await formatUser(user);
+  return formatedUser;
 };
