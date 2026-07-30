@@ -110,7 +110,7 @@ export default function SignIn() {
 
           <footer className="flex items-center justify-center gap-1 mt-4 text-sm">
             <p>Não tem uma conta?</p>
-              <Link to="/cadastro" className="text-[#4F378A] font-medium">
+              <Link to="/register" className="text-[#4F378A] font-medium">
                 Criar conta gratuita
               </Link>
           </footer>
