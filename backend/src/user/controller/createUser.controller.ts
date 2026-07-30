@@ -14,7 +14,7 @@ export const createUser:RequestHandler = async (req,res,next) => {
     if(!createUser){
       throw  new AppError("Error to create user",404)
     }
-    return res.status(201).json({error:null,data:data})
+    return res.status(201).json({error:null,data:createdUser})
   }catch (error: unknown) {
     next(error);
   }
